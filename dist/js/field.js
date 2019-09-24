@@ -450,14 +450,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"], __WEBPACK_IMPORTED_MODULE_0_laravel_nova__["HandlesValidationErrors"]],
     props: ['resourceName', 'resourceId', 'field'],
+    data: function data() {
+        return {
+            passwordType: 'password',
+            PasswordShow: true,
+            PasswordHide: false
+        };
+    },
     methods: {
         generate: function generate() {
             var chars = '';
+            this.passwordType = 'text';
             if (this.field.exclude_rules && this.field.exclude_rules.length > 0) {
                 for (var j = 0; j < this.field.exclude_rules.length; j++) {
                     this.field.exclude_rules[j] = this.field.exclude_rules[j].toLowerCase();
@@ -495,6 +528,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         copyPassword: function copyPassword() {
             var copyText = document.getElementById(this.field.name);
             var tooltip = document.getElementById("myTooltip");
+            this.passwordType = 'password';
             if (copyText.value.length > 0) {
                 copyText.select();
                 document.execCommand("copy");
@@ -523,6 +557,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          */
         handleChange: function handleChange(value) {
             this.value = value;
+        },
+        changeType: function changeType() {
+            this.copyPassword();
+        },
+        showPassword: function showPassword() {
+            this.passwordType = 'text';
+            this.PasswordShow = false;
+            this.PasswordHide = true;
+        },
+        hidePassword: function hidePassword() {
+            console.log('test');
+            this.passwordType = 'password';
+            this.PasswordHide = false;
+            this.PasswordShow = true;
         }
     }
 });
@@ -10768,35 +10816,183 @@ var render = function() {
     [
       _c("template", { slot: "field" }, [
         _c("div", { staticClass: "flex relative input-password-generate" }, [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.value,
-                expression: "value"
-              }
-            ],
-            staticClass: "w-full form-control form-input form-input-bordered",
-            class: _vm.errorClasses,
-            attrs: {
-              id: _vm.field.name,
-              type: "text",
-              placeholder: _vm.field.name,
-              autocomplete: "off"
-            },
-            domProps: { value: _vm.value },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+          this.passwordType === "checkbox"
+            ? _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.value,
+                    expression: "value"
+                  }
+                ],
+                staticClass:
+                  "w-full form-control form-input form-input-bordered",
+                class: _vm.errorClasses,
+                attrs: {
+                  id: _vm.field.name,
+                  placeholder: _vm.field.name,
+                  autocomplete: "off",
+                  type: "checkbox"
+                },
+                domProps: {
+                  checked: Array.isArray(_vm.value)
+                    ? _vm._i(_vm.value, null) > -1
+                    : _vm.value
+                },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$a = _vm.value,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = null,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 && (_vm.value = $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            (_vm.value = $$a
+                              .slice(0, $$i)
+                              .concat($$a.slice($$i + 1)))
+                        }
+                      } else {
+                        _vm.value = $$c
+                      }
+                    },
+                    _vm.changeType
+                  ]
                 }
-                _vm.value = $event.target.value
-              }
-            }
-          }),
+              })
+            : this.passwordType === "radio"
+            ? _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.value,
+                    expression: "value"
+                  }
+                ],
+                staticClass:
+                  "w-full form-control form-input form-input-bordered",
+                class: _vm.errorClasses,
+                attrs: {
+                  id: _vm.field.name,
+                  placeholder: _vm.field.name,
+                  autocomplete: "off",
+                  type: "radio"
+                },
+                domProps: { checked: _vm._q(_vm.value, null) },
+                on: {
+                  change: [
+                    function($event) {
+                      _vm.value = null
+                    },
+                    _vm.changeType
+                  ]
+                }
+              })
+            : _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.value,
+                    expression: "value"
+                  }
+                ],
+                staticClass:
+                  "w-full form-control form-input form-input-bordered",
+                class: _vm.errorClasses,
+                attrs: {
+                  id: _vm.field.name,
+                  placeholder: _vm.field.name,
+                  autocomplete: "off",
+                  type: this.passwordType
+                },
+                domProps: { value: _vm.value },
+                on: {
+                  change: _vm.changeType,
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.value = $event.target.value
+                  }
+                }
+              }),
           _vm._v(" "),
           _c("div", { staticClass: "field-icons absolute h-full pin-r pr-2" }, [
+            _c(
+              "button",
+              {
+                staticClass: "button",
+                attrs: { type: "button", value: "***" }
+              },
+              [
+                this.PasswordShow
+                  ? _c(
+                      "svg",
+                      {
+                        staticClass: "svg-inline--fa fa-eye icon text-80 mr-2",
+                        attrs: {
+                          "aria-hidden": "true",
+                          width: "26px",
+                          height: "23px",
+                          focusable: "false",
+                          "data-prefix": "far",
+                          "data-icon": "eye",
+                          role: "img",
+                          xmlns: "http://www.w3.org/2000/svg",
+                          viewBox: "0 0 576 512"
+                        },
+                        on: { click: _vm.showPassword }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            fill: "currentColor",
+                            d:
+                              "M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z"
+                          }
+                        })
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                this.PasswordHide
+                  ? _c(
+                      "svg",
+                      {
+                        staticClass:
+                          "svg-inline--fa fa-eye-slash icon text-80 mr-2",
+                        attrs: {
+                          "aria-hidden": "true",
+                          focusable: "false",
+                          "data-prefix": "far",
+                          "data-icon": "eye-slash",
+                          role: "img",
+                          xmlns: "http://www.w3.org/2000/svg",
+                          viewBox: "0 0 640 512"
+                        },
+                        on: { click: _vm.hidePassword }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            fill: "currentColor",
+                            d:
+                              "M634 471L36 3.51A16 16 0 0 0 13.51 6l-10 12.49A16 16 0 0 0 6 41l598 467.49a16 16 0 0 0 22.49-2.49l10-12.49A16 16 0 0 0 634 471zM296.79 146.47l134.79 105.38C429.36 191.91 380.48 144 320 144a112.26 112.26 0 0 0-23.21 2.47zm46.42 219.07L208.42 260.16C210.65 320.09 259.53 368 320 368a113 113 0 0 0 23.21-2.46zM320 112c98.65 0 189.09 55 237.93 144a285.53 285.53 0 0 1-44 60.2l37.74 29.5a333.7 333.7 0 0 0 52.9-75.11 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64c-36.7 0-71.71 7-104.63 18.81l46.41 36.29c18.94-4.3 38.34-7.1 58.22-7.1zm0 288c-98.65 0-189.08-55-237.93-144a285.47 285.47 0 0 1 44.05-60.19l-37.74-29.5a333.6 333.6 0 0 0-52.89 75.1 32.35 32.35 0 0 0 0 29.19C89.72 376.41 197.08 448 320 448c36.7 0 71.71-7.05 104.63-18.81l-46.41-36.28C359.28 397.2 339.89 400 320 400z"
+                          }
+                        })
+                      ]
+                    )
+                  : _vm._e()
+              ]
+            ),
+            _vm._v(" "),
             _c(
               "button",
               {
